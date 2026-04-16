@@ -54,7 +54,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of("http://localhost:3000", "https://13.48.25.154:8080", "https://smart-docs-hub.harshpandey6754.workers.dev"));
+        config.setAllowedOrigins(List.of("http://localhost:3000", "https://13.48.25.154:8080", "https://smart-docs-hub.harshpandey6754.workers.dev","https://10c9-13-48-25-154.ngrok-free.app"));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
         config.setExposedHeaders(List.of("Authorization"));
