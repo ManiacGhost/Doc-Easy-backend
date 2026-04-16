@@ -5,9 +5,6 @@ target/
 !**/src/test/**/target/
 .env
 .env.example
-.yml
-application.yml
-docker-compose.yml
 application.properties
 
 ### STS ###

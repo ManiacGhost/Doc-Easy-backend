@@ -1,0 +1,30 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: ""
+
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: false
+
+  # Disable Redis for tests
+  data:
+    redis:
+      host: localhost
+      port: 6379
+  cache:
+    type: none
+
+app:
+  storage:
+    path: target/test-uploads
+  jwt:
+    secret: jwtsupersecret
+    expiration: 3600000
+  otp:
+    expiration: 600000
+
