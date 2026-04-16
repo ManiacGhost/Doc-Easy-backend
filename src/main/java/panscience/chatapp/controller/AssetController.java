@@ -35,6 +35,7 @@ import java.util.List;
 @Validated
 public class AssetController {
 
+
     private final AssetQaService assetQaService;
     private final StorageRouterService storageRouterService;
 
