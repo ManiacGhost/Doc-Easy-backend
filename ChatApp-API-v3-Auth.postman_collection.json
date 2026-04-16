@@ -1,0 +1,664 @@
+{
+	"info": {
+		"_postman_id": "chatapp-v3-auth-collection",
+		"name": "ChatApp API v3 - With Authentication",
+		"description": "Complete API collection with JWT authentication, OTP verification, and user-specific asset management",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "1. Register User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Registration successful message\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.message).to.include(\"successful\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Test User\",\n  \"email\": \"test@example.com\",\n  \"password\": \"password123\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/register",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"register"
+							]
+						},
+						"description": "Register a new user with name, email, and password"
+					},
+					"response": []
+				},
+				{
+					"name": "2. Login (Request OTP)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"OTP sent message\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.message).to.include(\"OTP\");",
+									"});",
+									"",
+									"// Store email for next request",
+									"pm.environment.set(\"user_email\", pm.request.body.raw ? JSON.parse(pm.request.body.raw).email : \"\");"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"test@example.com\",\n  \"password\": \"password123\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"login"
+							]
+						},
+						"description": "Login with email and password. OTP will be sent to email (or check console logs if email not configured)"
+					},
+					"response": []
+				},
+				{
+					"name": "3. Verify OTP",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Token received\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.token).to.exist;",
+									"    ",
+									"    // Store token for subsequent requests",
+									"    pm.environment.set(\"auth_token\", jsonData.token);",
+									"    pm.environment.set(\"user_id\", jsonData.userId);",
+									"    pm.environment.set(\"user_name\", jsonData.name);",
+									"});",
+									"",
+									"pm.test(\"User details present\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.email).to.exist;",
+									"    pm.expect(jsonData.name).to.exist;",
+									"    pm.expect(jsonData.userId).to.exist;",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"test@example.com\",\n  \"otp\": \"123456\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/verify-otp",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"verify-otp"
+							]
+						},
+						"description": "Verify the OTP received via email. Replace '123456' with the actual OTP from your email or console logs."
+					},
+					"response": []
+				}
+			],
+			"description": "User registration and authentication endpoints"
+		},
+		{
+			"name": "Assets",
+			"item": [
+				{
+					"name": "1. Upload Asset",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Asset uploaded successfully\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.id).to.exist;",
+									"    pm.expect(jsonData.assetType).to.exist;",
+									"    ",
+									"    // Store asset ID for subsequent requests",
+									"    pm.environment.set(\"asset_id\", jsonData.id);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": []
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/api/assets/upload",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"assets",
+								"upload"
+							]
+						},
+						"description": "Upload a document, image, audio, or video file. Supports PDF, JPEG, PNG, MP3, MP4, etc."
+					},
+					"response": []
+				},
+				{
+					"name": "2. List All User Assets",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Returns array of assets\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.be.an('array');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/assets",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"assets"
+							]
+						},
+						"description": "Get all assets uploaded by the authenticated user (sorted by upload date, newest first)"
+					},
+					"response": []
+				},
+				{
+					"name": "3. Get Asset by ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Asset details present\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.id).to.exist;",
+									"    pm.expect(jsonData.originalFilename).to.exist;",
+									"    pm.expect(jsonData.assetType).to.exist;",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/assets/{{asset_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"assets",
+								"{{asset_id}}"
+							]
+						},
+						"description": "Get details of a specific asset by ID"
+					},
+					"response": []
+				},
+				{
+					"name": "4. Get Asset Summary",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Summary generated\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.assetId).to.exist;",
+									"    pm.expect(jsonData.summary).to.exist;",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/assets/{{asset_id}}/summary",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"assets",
+								"{{asset_id}}",
+								"summary"
+							]
+						},
+						"description": "Get AI-generated summary of the asset content (cached for 10 minutes)"
+					},
+					"response": []
+				},
+				{
+					"name": "5. Ask Question",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Answer generated\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.assetId).to.exist;",
+									"    pm.expect(jsonData.question).to.exist;",
+									"    pm.expect(jsonData.answer).to.exist;",
+									"    pm.expect(jsonData.timestamps).to.be.an('array');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"question\": \"What is this document about?\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/assets/{{asset_id}}/ask",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"assets",
+								"{{asset_id}}",
+								"ask"
+							]
+						},
+						"description": "Ask a question about the asset content. AI will answer based on extracted text/transcription."
+					},
+					"response": []
+				},
+				{
+					"name": "6. Find Topic Timestamps",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Timestamps returned\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.assetId).to.exist;",
+									"    pm.expect(jsonData.topic).to.exist;",
+									"    pm.expect(jsonData.timestamps).to.be.an('array');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/assets/{{asset_id}}/timestamps?topic=introduction",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"assets",
+								"{{asset_id}}",
+								"timestamps"
+							],
+							"query": [
+								{
+									"key": "topic",
+									"value": "introduction"
+								}
+							]
+						},
+						"description": "Find timestamps in video/audio where a specific topic is discussed"
+					},
+					"response": []
+				},
+				{
+					"name": "7. Get Play Link",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Play link generated\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.assetId).to.exist;",
+									"    pm.expect(jsonData.playableUrl).to.exist;",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/assets/{{asset_id}}/play-link?startSeconds=30",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"assets",
+								"{{asset_id}}",
+								"play-link"
+							],
+							"query": [
+								{
+									"key": "startSeconds",
+									"value": "30"
+								}
+							]
+						},
+						"description": "Get a playable URL for video/audio that starts at a specific timestamp"
+					},
+					"response": []
+				},
+				{
+					"name": "8. Stream Asset",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 302 (redirect)\", function () {",
+									"    pm.response.to.have.status(302);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/assets/{{asset_id}}/stream?startSeconds=0",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"assets",
+								"{{asset_id}}",
+								"stream"
+							],
+							"query": [
+								{
+									"key": "startSeconds",
+									"value": "0"
+								}
+							]
+						},
+						"description": "Stream or download the asset file (redirects to cloud storage URL)"
+					},
+					"response": []
+				}
+			],
+			"description": "Asset management endpoints (all require authentication)"
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8080",
+			"type": "string"
+		},
+		{
+			"key": "auth_token",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "asset_id",
+			"value": "1",
+			"type": "string"
+		},
+		{
+			"key": "user_email",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "user_id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "user_name",
+			"value": "",
+			"type": "string"
+		}
+	]
+}
+

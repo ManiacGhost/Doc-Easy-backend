@@ -1,0 +1,404 @@
+{
+  "info": {
+    "name": "ChatApp - AI-Powered Document & Multimedia Q&A",
+    "description": "API collection for testing the AI-powered document and multimedia Q&A web application",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Assets",
+      "item": [
+        {
+          "name": "Upload Asset",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": ""
+                }
+              ]
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/assets/upload",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "assets",
+                "upload"
+              ]
+            },
+            "description": "Upload a PDF, audio, or video file for Q&A processing"
+          },
+          "response": []
+        },
+        {
+          "name": "List All Assets",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/assets",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "assets"
+              ]
+            },
+            "description": "Retrieve all uploaded assets"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Asset by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/assets/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "assets",
+                "1"
+              ]
+            },
+            "description": "Retrieve details of a specific asset by ID"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Q&A Operations",
+      "item": [
+        {
+          "name": "Ask Question",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"question\": \"What are the main topics discussed in this document?\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/assets/1/ask",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "assets",
+                "1",
+                "ask"
+              ]
+            },
+            "description": "Ask a question about the content of a specific asset"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Summary",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/assets/1/summary",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "assets",
+                "1",
+                "summary"
+              ]
+            },
+            "description": "Get an AI-generated summary of the asset's content"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Timestamps & Playback",
+      "item": [
+        {
+          "name": "Find Topic Timestamps",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/assets/1/timestamps?topic=introduction",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "assets",
+                "1",
+                "timestamps"
+              ],
+              "query": [
+                {
+                  "key": "topic",
+                  "value": "introduction"
+                }
+              ]
+            },
+            "description": "Extract timestamps for a specific topic in audio/video files"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Play Link",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/assets/1/play-link?startSeconds=0",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "assets",
+                "1",
+                "play-link"
+              ],
+              "query": [
+                {
+                  "key": "startSeconds",
+                  "value": "0"
+                }
+              ]
+            },
+            "description": "Generate a playable URL for a specific timestamp in audio/video"
+          },
+          "response": []
+        },
+        {
+          "name": "Stream Asset",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/assets/1/stream?startSeconds=0",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "assets",
+                "1",
+                "stream"
+              ],
+              "query": [
+                {
+                  "key": "startSeconds",
+                  "value": "0"
+                }
+              ]
+            },
+            "description": "Stream/redirect to the asset for playback, optionally at a specific timestamp"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Example Workflows",
+      "item": [
+        {
+          "name": "1. Upload and Get Details",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": ""
+                }
+              ]
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/assets/upload",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "assets",
+                "upload"
+              ]
+            },
+            "description": "Step 1: Upload a file and note the returned asset ID"
+          },
+          "response": []
+        },
+        {
+          "name": "2. Summarize Content",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/assets/1/summary",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "assets",
+                "1",
+                "summary"
+              ]
+            },
+            "description": "Step 2: Get a summary of the uploaded content (replace 1 with actual asset ID from step 1)"
+          },
+          "response": []
+        },
+        {
+          "name": "3. Ask Specific Questions",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"question\": \"What is the main topic of this content?\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/assets/1/ask",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "assets",
+                "1",
+                "ask"
+              ]
+            },
+            "description": "Step 3: Ask questions about the content (replace 1 with actual asset ID)"
+          },
+          "response": []
+        },
+        {
+          "name": "4. Find Timestamps (for video/audio)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/assets/1/timestamps?topic=main+topic",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "assets",
+                "1",
+                "timestamps"
+              ],
+              "query": [
+                {
+                  "key": "topic",
+                  "value": "main topic"
+                }
+              ]
+            },
+            "description": "Step 4: Extract timestamps for specific topics in video/audio (replace 1 with actual asset ID)"
+          },
+          "response": []
+        },
+        {
+          "name": "5. Play Specific Timestamp",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/assets/1/play-link?startSeconds=120",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "assets",
+                "1",
+                "play-link"
+              ],
+              "query": [
+                {
+                  "key": "startSeconds",
+                  "value": "120"
+                }
+              ]
+            },
+            "description": "Step 5: Generate a playable link starting at a specific timestamp (replace 1 and 120 with actual values)"
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8080",
+      "type": "string"
+    },
+    {
+      "key": "asset_id",
+      "value": "1",
+      "type": "string"
+    }
+  ]
+}
+
